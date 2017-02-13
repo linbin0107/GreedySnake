@@ -1,307 +1,307 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title> MySnake </title>
-	<style type="text/css">
-		.snakepoint{width:28px;height:28px;border:1px solid black;background-color:red;position:absolute;}
-		.foodpoint{width:30px;height:30px;background-color:blue;position:absolute;}
-	</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title> MySnake </title>
+    <style type="text/css">
+        .snakepoint{width:28px;height:28px;border:1px solid black;background-color:red;position:absolute;}
+        .foodpoint{width:30px;height:30px;background-color:blue;position:absolute;}
+    </style>
 </head>
 
 <script type="text/javascript">
-	// The area for game
-	var widthNum=20;
-	var heightNum=15;
-	var unitLength=30;
+    // The area for game
+    var widthNum=20;
+    var heightNum=15;
+    var unitLength=30;
 
-	var snake;
-	var food={};
-	var repeat;
-	var next={};
-	var speed=null;
-	var Score=0;
+    var snake;
+    var food={};
+    var repeat;
+    var next={};
+    var speed=null;
+    var Score=0;
 
-	//Initialization
-	function initGame(){
-		Id("start").blur();
-		snake=[];
-		snake[0]={};
-		food={};
-		Score=0;
-		//start and pause buttons
-		Id("start").disabled=true;
-		Id("pause").disabled=false;
-		// get speed level
-		var level=document.getElementsByName("level");
-		for(var i=0;i<level.length;i++){
-			if(level[i].checked){
-			speed=level[i].value;
-			break;
-			}
-		}
-		//initialization of snake head
-		snake.push(new snakePoint(randomXY()[0],randomXY()[1]));
-		// create food
-		createFood();
-		// move automatically
-		repeat=window.setInterval(walk,speed);
-		//listen to the direction of keyboard
-		listenkey();
-	}
+    //Initialization
+    function initGame(){
+        Id("start").blur();
+        snake=[];
+        snake[0]={};
+        food={};
+        Score=0;
+        //start and pause buttons
+        Id("start").disabled=true;
+        Id("pause").disabled=false;
+        // get speed level
+        var level=document.getElementsByName("level");
+        for(var i=0;i<level.length;i++){
+            if(level[i].checked){
+            speed=level[i].value;
+            break;
+            }
+        }
+        //initialization of snake head
+        snake.push(new snakePoint(randomXY()[0],randomXY()[1]));
+        // create food
+        createFood();
+        // move automatically
+        repeat=window.setInterval(walk,speed);
+        //listen to the direction of keyboard
+        listenkey();
+    }
 
-	// show score and speedup
-	function showScore(){
-		Id("score").innerHTML="Score:"+Score+"";
-		if(Score%800==100) {
-			Id("cheer").style.display="none";
-		}
-		//speedup, once pey 800 score
-		if(Score%800==0) {
-			speed=speed-20;
-			Id("cheer").style.display="block";
-			clearTimeout(repeat);
-			repeat=setInterval(walk,speed);
-		}
-	}
+    // show score and speedup
+    function showScore(){
+        Id("score").innerHTML="Score:"+Score+"";
+        if(Score%800==100) {
+            Id("cheer").style.display="none";
+        }
+        //speedup, once pey 800 score
+        if(Score%800==0) {
+            speed=speed-20;
+            Id("cheer").style.display="block";
+            clearTimeout(repeat);
+            repeat=setInterval(walk,speed);
+        }
+    }
 
     // snake node,0,1,2,3,stand for up, down, left, right
-	function snakePoint(x,y,div){
-		this.x=x;
-		this.y=y;
-		// direction is random
-		this.direction=parseInt(Math.random()*4);
-		// if div is empty, then initialization it
-		this.div=div || initSnakePoint(this.x*unitLength,this.y*unitLength);
-	}
+    function snakePoint(x,y,div){
+        this.x=x;
+        this.y=y;
+        // direction is random
+        this.direction=parseInt(Math.random()*4);
+        // if div is empty, then initialization it
+        this.div=div || initSnakePoint(this.x*unitLength,this.y*unitLength);
+    }
 
-	//change the position of the snake  node
-	function change(point){
-		point.div.style.left=point.x*unitLength+"px";
-		point.div.style.top=point.y*unitLength+"px";
-	}
+    //change the position of the snake  node
+    function change(point){
+        point.div.style.left=point.x*unitLength+"px";
+        point.div.style.top=point.y*unitLength+"px";
+    }
 
-	// generate random
-	function randomXY(){
-		var isRepeat=true;
-    	//if true, means it overlap with snake,must regenerate it
-		while(isRepeat){
-			result=[parseInt(Math.random()*widthNum),parseInt(Math.random()*heightNum)];
-			isRepeat=false;
-			for (var len=snake.length,i=1;i<len-1;i++){
-				if(snake[i].x==result[0]&&snake[i].y==result[1]){
-					isRepeat=true;
-					break;
-				}
-			}
-		}
-		return result;
-	}
+    // generate random
+    function randomXY(){
+        var isRepeat=true;
+        //if true, means it overlap with snake,must regenerate it
+        while(isRepeat){
+            result=[parseInt(Math.random()*widthNum),parseInt(Math.random()*heightNum)];
+            isRepeat=false;
+            for (var len=snake.length,i=1;i<len-1;i++){
+                if(snake[i].x==result[0]&&snake[i].y==result[1]){
+                    isRepeat=true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 
     //listen to the keyboard
-	function listenkey(){
-		document.onkeydown=keyevent;
-	}
-	var key=true;
+    function listenkey(){
+        document.onkeydown=keyevent;
+    }
+    var key=true;
 
     //action to the event of keyboard
-	function keyevent(e){
-		if(key==true){
-			key=false;
-			e=e || window.event;
-			var keycode = e.which ? e.which :e.keyCode;
-			switch(e.keyCode){
-		    	//left, if it is not right
-				case 37:
-					if(snake[1].direction!=3) snake[1].direction=2;
-					break;
-			    //up
-				case 38:
-					if(snake[1].direction!=1) snake[1].direction=0;
-					break;
-			    //right
-				case 39:
-					if(snake[1].direction!=2) snake[1].direction=3;
-					break;
-			    //down
-				case 40:
-					if(snake[1].direction!=0) snake[1].direction=1;
-					break;
-			}
-		}
-	}
+    function keyevent(e){
+        if(key==true){
+            key=false;
+            e=e || window.event;
+            var keycode = e.which ? e.which :e.keyCode;
+            switch(e.keyCode){
+                //left, if it is not right
+                case 37:
+                    if(snake[1].direction!=3) snake[1].direction=2;
+                    break;
+                //up
+                case 38:
+                    if(snake[1].direction!=1) snake[1].direction=0;
+                    break;
+                //right
+                case 39:
+                    if(snake[1].direction!=2) snake[1].direction=3;
+                    break;
+                //down
+                case 40:
+                    if(snake[1].direction!=0) snake[1].direction=1;
+                    break;
+            }
+        }
+    }
 
     // To check if encounter food or itself or wall
-	function judge(direction){
-		snakehead=snake[1];
-	    //check wall
-		if(next.y==-1||next.y==16||next.x==-1||next.x==21){
-			gameOver();
-		}
-	    //check food
-		if(next.x==food.x&&next.y==food.y){
-			switch(direction){
-				case 0:
-					snakehead.y=snakehead.y+1;
-					break;
-				case 1:
-					snakehead.y=snakehead.y-1;
-					break;
-				case 2:
-					snakehead.x=snakehead.x+1;
-					break;
-				case 3:
-					snakehead.x=snakehead.x-1;
-					break;
-			}
-		eatfood();
-		}
-		else{
-		    // check if itself
-			for (var len=snake.length,i=4;i<len-1;i++){
-				if(next.x==snake[i].x&&next.y==snake[i].y){
-					gameOver();
-					return;
-				}
-			}
-			snake[snake.length-1].x=next.x;
-			snake[snake.length-1].y=next.y;
-			snake[0]=snake[snake.length-1];
-			snake.pop(snake[snake.length-1]);
-			rank();
-			change(snake[1]);
-		}
-	}
+    function judge(direction){
+        snakehead=snake[1];
+        //check wall
+        if(next.y==-1||next.y==16||next.x==-1||next.x==21){
+            gameOver();
+        }
+        //check food
+        if(next.x==food.x&&next.y==food.y){
+            switch(direction){
+                case 0:
+                    snakehead.y=snakehead.y+1;
+                    break;
+                case 1:
+                    snakehead.y=snakehead.y-1;
+                    break;
+                case 2:
+                    snakehead.x=snakehead.x+1;
+                    break;
+                case 3:
+                    snakehead.x=snakehead.x-1;
+                    break;
+            }
+        eatfood();
+        }
+        else{
+            // check if itself
+            for (var len=snake.length,i=4;i<len-1;i++){
+                if(next.x==snake[i].x&&next.y==snake[i].y){
+                    gameOver();
+                    return;
+                }
+            }
+            snake[snake.length-1].x=next.x;
+            snake[snake.length-1].y=next.y;
+            snake[0]=snake[snake.length-1];
+            snake.pop(snake[snake.length-1]);
+            rank();
+            change(snake[1]);
+        }
+    }
 
-	// make the snake body longer if eat food
-	function eatfood(){
+    // make the snake body longer if eat food
+    function eatfood(){
 
-		snake[0]=new snakePoint(food.x,food.y,food.div);
-		snake[0].div.className="snakepoint";
-		snake[0].direction=snake[1].direction;
+        snake[0]=new snakePoint(food.x,food.y,food.div);
+        snake[0].div.className="snakepoint";
+        snake[0].direction=snake[1].direction;
 
-		rank();
-		Score+=100;
-		showScore();
-		createFood();
-	}
+        rank();
+        Score+=100;
+        showScore();
+        createFood();
+    }
 
     // To make sure that snake[1] always is snake head.
-	function rank(){
-		for(var i=snake.length;i>0;i--){
-			snake[i]=snake[i-1];
-		}
-		snake[0]={};
-	}
+    function rank(){
+        for(var i=snake.length;i>0;i--){
+            snake[i]=snake[i-1];
+        }
+        snake[0]={};
+    }
 
     // over
-	function gameOver(){
-		alert("You total score is: "+Score);
-		clearTimeout(repeat);
-	    //remove food
-		remove(food.div);
-	    //remove snake
-		for(var i=1;i<snake.length;i++){
-			remove(snake[i].div);
-		}
-		Id("start").value="Restart";
-		Id("start").disabled=false;
-	}
+    function gameOver(){
+        alert("You total score is: "+Score);
+        clearTimeout(repeat);
+        //remove food
+        remove(food.div);
+        //remove snake
+        for(var i=1;i<snake.length;i++){
+            remove(snake[i].div);
+        }
+        Id("start").value="Restart";
+        Id("start").disabled=false;
+    }
 
-	function walk(){
-		var len=snake.length;
-		snake[len-1].direction=snake[1].direction;
-		switch(snake[1].direction){
-			//Up
-			case 0:
-				next.y=snake[1].y-1;next.x=snake[1].x;
-				judge(0);
-				break;
-			//Down
-			case 1:
-				next.y=snake[1].y+1;next.x=snake[1].x;
-				judge(1);
-				break;
-			//Left
-			case 2:
-				next.y=snake[1].y;next.x=snake[1].x-1;
-				judge(2);
-				break;
-			//Right
-			case 3:
-				next.y=snake[1].y;next.x=snake[1].x+1;
-				judge(3);
-				break;
-		}
-		key=true;
-	}
+    function walk(){
+        var len=snake.length;
+        snake[len-1].direction=snake[1].direction;
+        switch(snake[1].direction){
+            //Up
+            case 0:
+                next.y=snake[1].y-1;next.x=snake[1].x;
+                judge(0);
+                break;
+            //Down
+            case 1:
+                next.y=snake[1].y+1;next.x=snake[1].x;
+                judge(1);
+                break;
+            //Left
+            case 2:
+                next.y=snake[1].y;next.x=snake[1].x-1;
+                judge(2);
+                break;
+            //Right
+            case 3:
+                next.y=snake[1].y;next.x=snake[1].x+1;
+                judge(3);
+                break;
+        }
+        key=true;
+    }
 
     // initialize the DIV of snake
-	function initSnakePoint(x,y){
-		var div=document.createElement("div");
-		div.className="snakepoint";
-		div.style.top=y+"px";
-		div.style.left=x+"px";
-		Id("Box").appendChild(div);
-		return div;
-	}
+    function initSnakePoint(x,y){
+        var div=document.createElement("div");
+        div.className="snakepoint";
+        div.style.top=y+"px";
+        div.style.left=x+"px";
+        Id("Box").appendChild(div);
+        return div;
+    }
 
     //initialize the DIV fo food
-	function createFood(){
-		var foodxy=randomXY();
-		var div=document.createElement("div");
-	    //save the node
-		food.x=foodxy[0];
-		food.y=foodxy[1];
-		food.div=div;
-		div.className="foodpoint";
-		div.style.left=foodxy[0]*unitLength+"px";
-		div.style.top=foodxy[1]*unitLength+"px";
-		Id("Box").appendChild(div);
-	}
+    function createFood(){
+        var foodxy=randomXY();
+        var div=document.createElement("div");
+        //save the node
+        food.x=foodxy[0];
+        food.y=foodxy[1];
+        food.div=div;
+        div.className="foodpoint";
+        div.style.left=foodxy[0]*unitLength+"px";
+        div.style.top=foodxy[1]*unitLength+"px";
+        Id("Box").appendChild(div);
+    }
 
-	//pause and continue
-	function pause(){
-		if(Id("pause").value=="Pause"){
-			Id("pause").value="Continue";
-			clearTimeout(repeat);
-		}
-		else if(Id("pause").value=="Continue"){
-			Id("pause").value="Pause";
-			repeat=setInterval(walk,speed);
-		}
+    //pause and continue
+    function pause(){
+        if(Id("pause").value=="Pause"){
+            Id("pause").value="Continue";
+            clearTimeout(repeat);
+        }
+        else if(Id("pause").value=="Continue"){
+            Id("pause").value="Pause";
+            repeat=setInterval(walk,speed);
+        }
 
-	}
+    }
 
     //remove the current node
-	function remove(elem){
-		if(elem) elem.parentNode.removeChild(elem);
-	}
+    function remove(elem){
+        if(elem) elem.parentNode.removeChild(elem);
+    }
 
-	function Id(id){
-		return (typeof id =="string") ? document.getElementById(id):id;
-	}
+    function Id(id){
+        return (typeof id =="string") ? document.getElementById(id):id;
+    }
 </script>
 
 <body>
-	<div id="contain" style="margin:0 auto;width:860px;position:relative;">
-		<div id="Box" style="border:4px solid green;background:green;width:630px;height:480px;position:relative;">
-		</div>
-		<div id="Msg" style="border:4px blue solid;width:200px;height:400px;position:absolute;left:650px;top:0px;padding-left:10px;">
-			<input type="button" id="start" value="Start" onclick="initGame();" /><br/>
-			<input type="button" id="pause" disabled="true" value="Pause" onclick="pause();" />
-			<div style="padding:5px 2px;">
-				<input type="radio" name="level" value="50">Level 5<br/>
-				<input type="radio" name="level" value="100">Level 4<br/>
-				<input type="radio" name="level" value="150" checked="checked">Level 3<br/>
-				<input type="radio" name="level" value="200">Level 2<br/>
-				<input type="radio" name="level" value="300" >Level 1<br>
-			</div>
-			<span id="score" style="font-size:30px;">Score</span>
-			<div id="cheer" style="padding:5px 2px;font-size:20px;color:red;display:none;"> </div>
+    <div id="contain" style="margin:0 auto;width:860px;position:relative;">
+        <div id="Box" style="border:4px solid green;background:green;width:630px;height:480px;position:relative;">
+        </div>
+        <div id="Msg" style="border:4px blue solid;width:200px;height:400px;position:absolute;left:650px;top:0px;padding-left:10px;">
+            <input type="button" id="start" value="Start" onclick="initGame();" /><br/>
+            <input type="button" id="pause" disabled="true" value="Pause" onclick="pause();" />
+            <div style="padding:5px 2px;">
+                <input type="radio" name="level" value="50">Level 5<br/>
+                <input type="radio" name="level" value="100">Level 4<br/>
+                <input type="radio" name="level" value="150" checked="checked">Level 3<br/>
+                <input type="radio" name="level" value="200">Level 2<br/>
+                <input type="radio" name="level" value="300" >Level 1<br>
+            </div>
+            <span id="score" style="font-size:30px;">Score</span>
+            <div id="cheer" style="padding:5px 2px;font-size:20px;color:red;display:none;"> </div>
 
-		</div>
-	</div>
+        </div>
+    </div>
 </body>
 
 </html>
